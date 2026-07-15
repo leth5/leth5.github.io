@@ -1,9 +1,18 @@
 body {
     background-color: white;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 .row {
+    display: flex;
     position: relative;
+}
+
+.title {
+    width: 60px;
+    padding: 0;
+    margin: 3px;
+    display: inline;
 }
 
 .point {
@@ -13,6 +22,13 @@ body {
     margin: 3px;
     border-radius: 50%;
     border: 1px solid black;
+}
+
+.date {
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    margin: 3px;
 }
 
 .point.filled {

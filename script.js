@@ -3,11 +3,14 @@ import {MD5} from "./md5.js"
 const main = document.getElementById('main');
 const passwordInput = document.getElementById('password')
 
-const link = 'https://script.google.com/macros/s/AKfycbyg8nGYvoqVCrziF8I1KxFVFyL9q2ALyV2rDgRq5eABW0txyoe0bH_U7iFDfna7MsGVPQ/exec';
+const link = 'https://script.google.com/macros/s/AKfycbyjcN9mcEfslsCslVoTrdc4ZQ1TZB3FjIahVzpT1VwEXxesrfeq2w34oaLxEiYN-OdhIw/exec';
 
 passwordInput.addEventListener('input', () => checkPassword())
 
-checkPassword();
+if (localStorage.getItem("password") == "passed") {
+    removePasswordField();
+    getData();
+}
 
 function getData() {
     fetch(link)
@@ -16,27 +19,54 @@ function getData() {
 }
 
 function create(data) {
-    
-    for (let r = 0; r < data[0].length; r++) {
+
+    checkDates(data);
+
+    var row = document.createElement('div');
+    row.classList.add('row');
+
+    var title = document.createElement('div');
+    title.classList.add('title');
+    title.innerHTML = "";
+    row.appendChild(title);
+
+    for (let d = 1; d < data.length; d++) {
+        var date = new Date(data[d][0]);
+
+        var dateDisplay = document.createElement('div');
+        dateDisplay.classList.add('date');
+        dateDisplay.innerHTML = date.getDate();
+
+        row.appendChild(dateDisplay);
+    }
+    document.body.appendChild(row);
+
+    for (let r = 1; r < data[0].length; r++) {
+        
         var row = document.createElement('div');
         row.classList.add('row');
-        row.innerHTML = data[0][r];
+
+        var title = document.createElement('div');
+        title.classList.add('title');
+        title.innerHTML = data[0][r];
+        row.appendChild(title);
 
         for (let p = 1; p < data.length; p++) {
+
             let point = document.createElement('button');
             point.classList.add('point');
             let value = data[p][r];
-            point.innerHTML = value;
             if (value) {
                 point.classList.add('filled');
             }
             row.appendChild(point);
 
             point.addEventListener('click', () => {
-                
-                let newValue = Math.abs(1 - point.innerHTML);
+                let newValue = point.classList.contains('filled') ? 0 : 1;
+
                 call(p, r, newValue)
-                point.innerHTML = newValue;
+                
+                localStorage.setItem("password", "passed");
 
                 if (newValue) {
                     point.classList.add('filled');
@@ -54,9 +84,14 @@ function create(data) {
 
 function checkPassword() {
     if (MD5(document.getElementById('password').value) == "dd959a1a26196f00da4330a3b3a42b63") {
-        document.getElementById('password').remove();
+        localStorage.setItem("password", "passed");
+        removePasswordField();
         getData();
     }
+}
+
+function removePasswordField() {
+    document.getElementById('password').remove();
 }
 
 function call(row, column, value) {
@@ -68,3 +103,36 @@ function call(row, column, value) {
     });
 }
 
+const millisecondsInADay = 8.64e7;
+
+function checkDates(data) {
+
+    var count = data.length;
+    var rows = data[0].length;
+
+    var date = new Date(data[count-1][0]);
+    var today = new Date();
+
+    var difference = today - date;
+    
+    while (difference > millisecondsInADay) {
+        date = new Date(date.getTime() + millisecondsInADay);
+
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        var dateString = (date.getDate()) + " " + months[date.getMonth()] + " " + date.getFullYear();
+
+        
+        data.push([])
+
+        data[count][0] = dateString;
+        call(count, 0, dateString);
+        
+        for (let i = 0; i < rows; i++) {
+            data[count].push(0);
+        }
+
+        count += 1;
+
+        difference = today - date;
+    }
+}
