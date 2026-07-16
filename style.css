@@ -5,7 +5,8 @@ body {
     color: #b1aba5;
     font-size: 14px;
     font-weight: 500;
-    margin-top: 80px;
+    margin-top: 60px;
+    margin-left: 40px;
 }
 
 .row {
@@ -89,6 +90,6 @@ body #password {
     position: absolute;
     width: 15px;
     height: 20px;
-    top: 82px;
-    left: 140px;
+    top: 62px;
+    left: 172px;
 }
