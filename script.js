@@ -4,6 +4,7 @@ const main = document.getElementById('main');
 const passwordInput = document.getElementById('password')
 
 const link = 'https://script.google.com/macros/s/AKfycbyjcN9mcEfslsCslVoTrdc4ZQ1TZB3FjIahVzpT1VwEXxesrfeq2w34oaLxEiYN-OdhIw/exec';
+const dividerPos = 6;
 
 passwordInput.addEventListener('input', () => checkPassword())
 
@@ -22,24 +23,29 @@ function create(data) {
 
     checkDates(data);
 
+    
     var row = document.createElement('div');
     row.classList.add('row');
-
+    
     var title = document.createElement('div');
     title.classList.add('title');
     title.innerHTML = "";
     row.appendChild(title);
-
+    
     for (let d = 1; d < data.length; d++) {
         var date = new Date(data[d][0]);
-
+        
         var dateDisplay = document.createElement('div');
         dateDisplay.classList.add('date');
         dateDisplay.innerHTML = date.getDate();
-
+        
         row.appendChild(dateDisplay);
     }
     document.body.appendChild(row);
+
+        var divider = document.createElement('div');
+    divider.classList.add('divider')
+    document.body.appendChild(divider);
 
     for (let r = 1; r < data[0].length; r++) {
         
@@ -59,6 +65,11 @@ function create(data) {
             if (value) {
                 point.classList.add('filled');
             }
+
+            if (r >= dividerPos) {
+                point.classList.add('secondColor');
+            }
+
             row.appendChild(point);
 
             point.addEventListener('click', () => {
@@ -74,8 +85,14 @@ function create(data) {
                     point.classList.remove('filled');
                 }
             });
-        }
 
+        }
+        
+        if (r == dividerPos) {
+            var divider = document.createElement('div');
+            divider.classList.add('divider')
+            document.body.appendChild(divider);
+        }
 
         document.body.appendChild(row);
     }
